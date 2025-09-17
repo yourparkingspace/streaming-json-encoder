@@ -30,7 +30,7 @@ class StreamJsonEncoder extends AbstractJsonEncoder
      * @param mixed $value The value to encode as JSON
      * @param callable|null $stream An optional stream to pass the output or null to echo it
      */
-    public function __construct($value, callable $stream = null)
+    public function __construct($value, ?callable $stream = null)
     {
         parent::__construct($value);
 

@@ -8,16 +8,18 @@ namespace Violet\StreamingJsonEncoder;
  * @author Riikka Kalliomäki <riikka.kalliomaki@gmail.com>
  * @copyright Copyright (c) 2016-2020 Riikka Kalliomäki
  * @license http://opensource.org/licenses/mit-license.php MIT License
+ *
+ * @implements \Iterator<?int, ?int>
  */
 abstract class AbstractJsonEncoder implements \Iterator
 {
-    /** @var \Iterator[] Current value stack in encoding */
+    /** @var ?\Iterator[] Current value stack in encoding */
     private $stack;
 
     /** @var bool[] True for every object in the stack, false for an array */
     private $stackType;
 
-    /** @var array Stack of values being encoded */
+    /** @var array<int, mixed> Stack of values being encoded */
     private $valueStack;
 
     /** @var bool Whether the next value is the first value in an array or an object */
@@ -102,7 +104,7 @@ abstract class AbstractJsonEncoder implements \Iterator
 
     /**
      * Returns the current encoding value stack.
-     * @return array The current encoding value stack
+     * @return array<int, mixed> The current encoding value stack
      */
     protected function getValueStack()
     {
@@ -111,6 +113,7 @@ abstract class AbstractJsonEncoder implements \Iterator
 
     /**
      * Initializes the iterator if it has not been initialized yet.
+     * @return void
      */
     private function initialize()
     {
@@ -152,6 +155,7 @@ abstract class AbstractJsonEncoder implements \Iterator
 
     /**
      * Returns the JSON encoding to the beginning.
+     * @return void
      */
     #[\ReturnTypeWillChange]
     public function rewind()
@@ -200,6 +204,7 @@ abstract class AbstractJsonEncoder implements \Iterator
      * Handles the next value from the iterator to be encoded as JSON.
      * @param \Iterator $iterator The iterator used to generate the next value
      * @param bool $isObject True if the iterator is being handled as an object, false if not
+     * @return void
      */
     private function processStack(\Iterator $iterator, $isObject)
     {
@@ -244,6 +249,7 @@ abstract class AbstractJsonEncoder implements \Iterator
     /**
      * Handles the given JSON value appropriately depending on it's type.
      * @param mixed $value The value that should be encoded as JSON
+     * @return void
      */
     private function processValue($value)
     {
@@ -282,6 +288,7 @@ abstract class AbstractJsonEncoder implements \Iterator
      * Adds an JSON encoding error to the list of errors.
      * @param string $message The error message to add
      * @throws EncodingException If the encoding should not continue due to the error
+     * @return void
      */
     private function addError($message)
     {
@@ -300,7 +307,8 @@ abstract class AbstractJsonEncoder implements \Iterator
 
     /**
      * Pushes the given iterable to the value stack.
-     * @param object|array $iterable The iterable value to push to the stack
+     * @param object|array<array-key, mixed> $iterable The iterable value to push to the stack
+     * @return void
      */
     private function pushStack($iterable)
     {
@@ -320,7 +328,7 @@ abstract class AbstractJsonEncoder implements \Iterator
 
     /**
      * Creates a generator from the given iterable using a foreach loop.
-     * @param object|array $iterable The iterable value to iterate
+     * @param object|array<array-key, mixed> $iterable The iterable value to iterate
      * @return \Generator The generator using the given iterable
      */
     private function getIterator($iterable)
@@ -332,7 +340,7 @@ abstract class AbstractJsonEncoder implements \Iterator
 
     /**
      * Tells if the given iterable should be handled as a JSON object or not.
-     * @param object|array $iterable The iterable value to test
+     * @param object|array<array-key, mixed> $iterable The iterable value to test
      * @param \Iterator $iterator An Iterator created from the iterable value
      * @return bool True if the given iterable should be treated as object, false if not
      */
@@ -351,7 +359,7 @@ abstract class AbstractJsonEncoder implements \Iterator
 
     /**
      * Tells if the given array is an associative array.
-     * @param array $array The array to test
+     * @param array<array-key, mixed> $array The array to test
      * @return bool True if the array is associative, false if not
      */
     private function isAssociative(array $array)
@@ -373,6 +381,7 @@ abstract class AbstractJsonEncoder implements \Iterator
 
     /**
      * Removes the top element of the value stack.
+     * @return void
      */
     private function popStack()
     {
@@ -396,6 +405,7 @@ abstract class AbstractJsonEncoder implements \Iterator
      * Encodes the given value as JSON and passes it to output stream.
      * @param mixed $value The value to output as JSON
      * @param int $token The token type of the value
+     * @return void
      */
     private function outputJson($value, $token)
     {
@@ -435,6 +445,7 @@ abstract class AbstractJsonEncoder implements \Iterator
      * Passes the given token to the output stream and ensures the next token is preceded by a newline.
      * @param string $string The token to write to the output stream
      * @param int $token The type of the token
+     * @return void
      */
     private function outputLine($string, $token)
     {
@@ -446,6 +457,7 @@ abstract class AbstractJsonEncoder implements \Iterator
      * Passes the given token to the output stream.
      * @param string $string The token to write to the output stream
      * @param int $token The type of the token
+     * @return void
      */
     private function output($string, $token)
     {
